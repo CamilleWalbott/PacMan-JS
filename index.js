@@ -1,3 +1,6 @@
+import Boundary from '/boundary.js'
+import Player from '/player.js'
+
 const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')
 
@@ -5,41 +8,6 @@ const c = canvas.getContext('2d')
 canvas.width = innerWidth
 canvas.height = innerHeight
 
-
-//classe pour un carré de la map
-class Boundary {
-    static width = 40
-    static height = 40
-    constructor({position}  ){
-      this.position = position 
-      this.width = 40
-      this.height = 40
-    }
-
-    draw(){
-        c.fillStyle ='blue'
-        c.fillRect(this.position.x, this.position.y, this.width, this.height)
-    }
-}
-
-//Classe du pacman / Pacman class
-class Player {
-    constructor({
-        position,
-        velocity
-    }){
-        this.position = position
-        this.velocity = velocity
-        this.radius = 10
-    }
-    draw(){
-        c.beginPath()
-        c.arc(this.position.x, this.position.y, this.radius, 0, Math.PI *2)
-        c.fillStyle = 'yellow'
-        c.fill()
-        c.closePath()
-    }
-}
 
 //dessin map / map draw
 const map = [
@@ -59,7 +27,8 @@ const player = new Player({
     velocity : {
         x:0,
         y:0
-    }
+    }, 
+    c
 })
 
 //création map / map creation
@@ -72,7 +41,8 @@ map.forEach((row, i) => {
                 position: {
                     x: Boundary.width *j,
                     y: Boundary.height *i
-                }
+                }, 
+                c
             })
         )
         break
@@ -80,7 +50,7 @@ map.forEach((row, i) => {
     })
 })
 boundaries.forEach((boundary) => {
-    boundary.draw();
+    boundary.draw(c);
 })
-player.draw()
+player.draw(c)
 
