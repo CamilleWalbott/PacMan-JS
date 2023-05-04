@@ -6,7 +6,7 @@ export default class Player {
     }){
         this.position = position
         this.velocity = velocity
-        this.radius = 10
+        this.radius = 15
     }
     draw(c){
         c.beginPath()

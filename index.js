@@ -21,8 +21,8 @@ const map = [
 const boundaries = []
 const player = new Player({
     position : {
-        x:40,
-        y:40
+        x:Boundary.width * 1.5,
+        y:Boundary.height * 1.5
     },
     velocity : {
         x:0,
@@ -53,4 +53,23 @@ boundaries.forEach((boundary) => {
     boundary.draw(c);
 })
 player.draw(c)
+
+window.addEventListener('keydown', ({key}) => {
+    switch(key){
+        case 'z' :
+            player.velocity.y -= 5 ;
+        break
+        case 'q' :
+            player.velocity.x -= 5;
+        break
+        case 's' :
+            player.velocity.y += 5;
+        break
+        case 'd' :
+            player.velocity.x += 5;
+        break
+    }
+    console.log(player.velocity)
+}
+)
 
