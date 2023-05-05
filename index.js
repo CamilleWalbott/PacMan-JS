@@ -26,11 +26,11 @@ const keys = {
 let lastKey = ''
 //dessin map / map draw
 const map = [
-  ['-', '-', '-', '-', '-', '-',], 
-  ['-', ' ', ' ', ' ', ' ', '-',], 
-  ['-', ' ', '-', '-', ' ', '-',],
-  ['-', ' ', ' ', ' ', ' ', '-',], 
-  ['-', '-', '-', '-', '-', '-',], 
+  ['-', '-', '-', '-', '-', '-', '-',], 
+  ['-', ' ', ' ', ' ', ' ', ' ', '-',], 
+  ['-', ' ', '-', ' ', '-', ' ', '-',],
+  ['-', ' ', ' ', ' ', ' ', ' ', '-',], 
+  ['-', '-', '-', '-', '-', '-', '-',], 
 ]
 
 const boundaries = []
@@ -73,10 +73,10 @@ function animate() {
     boundaries.forEach((boundary) => {
         boundary.draw(c);
 
-        if (player.position.y - player.radius <= boundary.position.y + boundary.height 
-            && player.position.x + player.radius >= boundary.position.x 
-            && player.position.y + player.radius >= boundary.position.y 
-            && player.position.x - player.radius <= boundary.position.x + boundary.width ){
+        if (player.position.y - player.radius + player.velocity.y <= boundary.position.y + boundary.height  
+            && player.position.x + player.radius + player.velocity.x >= boundary.position.x 
+            && player.position.y + player.radius + player.velocity.y >= boundary.position.y 
+            && player.position.x - player.radius + player.velocity.x <= boundary.position.x + boundary.width ){
                 console.log("ça touche")
                 player.velocity.x=0
                 player.velocity.y=0
