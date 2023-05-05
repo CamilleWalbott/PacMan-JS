@@ -105,7 +105,26 @@ function animate() {
             } 
         }   
     }else if (keys.q.pressed && lastKey === 'q'){
-        player.velocity.x = -5
+        //prends en compte seulement le carré de gauche
+        for (let i =0; i <boundaries.length; i++){
+            const boundary = boundaries[i]
+            if (circleCollidesWithRectangle({
+                circle: {
+                    ...player, 
+                    velocity: {
+                        x:-5, 
+                        y:0
+                    }
+                }, 
+                rectangle: boundary
+            }) 
+            ){
+            player.velocity.x = 0
+            break
+            } else {
+            player.velocity.x = -5
+            } 
+        }
     }else if (keys.s.pressed && lastKey === 's'){
         //prends en compte seulement le carré inférieur
         for (let i =0; i <boundaries.length; i++){
@@ -127,8 +146,28 @@ function animate() {
             } else {
             player.velocity.y = 5
             } 
-        }       }else if (keys.d.pressed && lastKey === 'd'){
-        player.velocity.x = 5
+        }       
+    }else if (keys.d.pressed && lastKey === 'd'){
+        //prends en compte seulement le carré de droite
+        for (let i =0; i <boundaries.length; i++){
+            const boundary = boundaries[i]
+            if (circleCollidesWithRectangle({
+                circle: {
+                    ...player, 
+                    velocity: {
+                        x:5, 
+                        y:0
+                    }
+                }, 
+                rectangle: boundary
+            }) 
+            ){
+            player.velocity.x = 0
+            break
+            } else {
+            player.velocity.x = 5
+            } 
+        }           
     }
 
     boundaries.forEach((boundary) => {
