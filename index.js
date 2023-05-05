@@ -80,13 +80,52 @@ function animate() {
     c.clearRect(0,0, canvas.width, canvas.height)
 
     //déplacement selon touche /  movement according to key
-     if (keys.z.pressed && lastKey === 'z'){
-        player.velocity.y = -5
+    if (keys.z.pressed && lastKey === 'z'){
+        for (let i =0; i <boundaries.length; i++){
+            //prends en compte seulement le carré superieur
+            const boundary = boundaries[i]
+            if (circleCollidesWithRectangle({
+                circle: {
+                    ...player, 
+                    velocity: 
+                    {
+                    x:0, 
+                    y:-5
+                    }
+                }, 
+                rectangle: boundary
+            }) 
+            ){
+            player.velocity.y = 0
+            break
+            } else {
+            player.velocity.y = -5
+            } 
+        }   
     }else if (keys.q.pressed && lastKey === 'q'){
         player.velocity.x = -5
     }else if (keys.s.pressed && lastKey === 's'){
-        player.velocity.y = 5
-    }else if (keys.d.pressed && lastKey === 'd'){
+        //prends en compte seulement le carré inférieur
+        for (let i =0; i <boundaries.length; i++){
+            const boundary = boundaries[i]
+            if (circleCollidesWithRectangle({
+                circle: {
+                    ...player, 
+                    velocity: 
+                    {
+                    x:0, 
+                    y:5
+                    }
+                }, 
+                rectangle: boundary
+            }) 
+            ){
+            player.velocity.y = 0
+            break
+            } else {
+            player.velocity.y = 5
+            } 
+        }       }else if (keys.d.pressed && lastKey === 'd'){
         player.velocity.x = 5
     }
 
@@ -94,7 +133,6 @@ function animate() {
         boundary.draw(c);
 
         if (circleCollidesWithRectangle({circle: player, rectangle: boundary}) ){
-                console.log("ça touche")
                 player.velocity.x=0
                 player.velocity.y=0
             
@@ -126,7 +164,6 @@ window.addEventListener('keydown', ({key}) => {
             lastKey = 'd'    
             break
     }
-    console.log(keys.d.pressed)
 }
 )
 window.addEventListener('keyup', ({key}) => {
@@ -144,7 +181,6 @@ window.addEventListener('keyup', ({key}) => {
             keys.d.pressed = false        
         break
     }
-    console.log(player.velocity)
 }
 )
 
