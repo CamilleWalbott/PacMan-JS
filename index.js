@@ -1,5 +1,6 @@
 import Boundary from '/boundary.js'
 import Player from '/player.js'
+import Pellet from '/pellets.js'
 
 const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')
@@ -41,6 +42,7 @@ const map = [
   ['4', '-', '-', '-', '-', '-', '-', '-', '-', '-', '3',], 
 ]
 
+const pellets = []
 const boundaries = []
 const player = new Player({
     position : {
@@ -220,11 +222,22 @@ map.forEach((row, i) => {
             })
         )
         break
-        
+        // granules / pellets
+        case ' ': 
+        pellets.push(
+            new Pellet({
+                position: {
+                    x: Boundary.width/2 + Boundary.width * j,
+                    y: Boundary.height/2 + Boundary.height * i
+                }
+            })
+        )
+        break
       }  
     })
 })
 
+//collision
 function circleCollidesWithRectangle({
     circle, rectangle
 }) {
@@ -328,6 +341,12 @@ function animate() {
         }           
     }
 
+    //dessin granules / pellets draw
+    pellets.forEach(pellet => {
+        pellet.draw(c)
+    })
+
+    //dessin bords / boundaries draw
     boundaries.forEach((boundary) => {
         boundary.draw(c);
 
