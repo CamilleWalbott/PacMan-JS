@@ -65,29 +65,22 @@ map.forEach((row, i) => {
     })
 })
 
+function circleCollidesWithRectangle({
+    circle, rectangle
+}) {
+    return (circle.position.y - circle.radius + circle.velocity.y <= rectangle.position.y + rectangle.height  
+        && circle.position.x + circle.radius + circle.velocity.x >= rectangle.position.x 
+        && circle.position.y + circle.radius + circle.velocity.y >= rectangle.position.y 
+        && circle.position.x - circle.radius + circle.velocity.x <= rectangle.position.x + rectangle.width )
+}
+
 //loop animation
 function animate() {
     requestAnimationFrame(animate)
-    console.log('jdfhdskfjh')
     c.clearRect(0,0, canvas.width, canvas.height)
-    boundaries.forEach((boundary) => {
-        boundary.draw(c);
-
-        if (player.position.y - player.radius + player.velocity.y <= boundary.position.y + boundary.height  
-            && player.position.x + player.radius + player.velocity.x >= boundary.position.x 
-            && player.position.y + player.radius + player.velocity.y >= boundary.position.y 
-            && player.position.x - player.radius + player.velocity.x <= boundary.position.x + boundary.width ){
-                console.log("ça touche")
-                player.velocity.x=0
-                player.velocity.y=0
-            
-        }
-    })
-    player.update(c)
-    
 
     //déplacement selon touche /  movement according to key
-    if (keys.z.pressed && lastKey === 'z'){
+     if (keys.z.pressed && lastKey === 'z'){
         player.velocity.y = -5
     }else if (keys.q.pressed && lastKey === 'q'){
         player.velocity.x = -5
@@ -96,6 +89,18 @@ function animate() {
     }else if (keys.d.pressed && lastKey === 'd'){
         player.velocity.x = 5
     }
+
+    boundaries.forEach((boundary) => {
+        boundary.draw(c);
+
+        if (circleCollidesWithRectangle({circle: player, rectangle: boundary}) ){
+                console.log("ça touche")
+                player.velocity.x=0
+                player.velocity.y=0
+            
+        }
+    })
+    player.update(c)
 
 }
 animate()
