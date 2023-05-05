@@ -72,11 +72,21 @@ function animate() {
     c.clearRect(0,0, canvas.width, canvas.height)
     boundaries.forEach((boundary) => {
         boundary.draw(c);
+
+        if (player.position.y - player.radius <= boundary.position.y + boundary.height 
+            && player.position.x + player.radius >= boundary.position.x 
+            && player.position.y + player.radius >= boundary.position.y 
+            && player.position.x - player.radius <= boundary.position.x + boundary.width ){
+                console.log("ça touche")
+                player.velocity.x=0
+                player.velocity.y=0
+            
+        }
     })
     player.update(c)
-    player.velocity.x=0
-    player.velocity.y=0
+    
 
+    //déplacement selon touche /  movement according to key
     if (keys.z.pressed && lastKey === 'z'){
         player.velocity.y = -5
     }else if (keys.q.pressed && lastKey === 'q'){
@@ -91,6 +101,7 @@ function animate() {
 animate()
 
 
+//listeners touches / keys listeners
 window.addEventListener('keydown', ({key}) => {
     switch(key){
         case 'z' :
@@ -113,8 +124,6 @@ window.addEventListener('keydown', ({key}) => {
     console.log(keys.d.pressed)
 }
 )
-
-
 window.addEventListener('keyup', ({key}) => {
     switch(key){
         case 'z' :
