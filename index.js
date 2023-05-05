@@ -3,6 +3,7 @@ import Player from '/player.js'
 import Pellet from '/pellets.js'
 
 const canvas = document.querySelector('canvas')
+const scoreElement = document.querySelector('#score')
 const c = canvas.getContext('2d')
 
 //Réglages canvas / Canvas settings
@@ -25,6 +26,8 @@ const keys = {
 }
 
 let lastKey = ''
+let score = 0
+
 //dessin map / map draw
 const map = [
   ['1', '-', '-', '-', '-', '-', '-', '-', '-', '-', '2',], 
@@ -341,17 +344,18 @@ function animate() {
         }           
     }
 
-    //dessin granules / pellets draw
+    //dessin et touché des granules / pellets draw and touch
     for(let i = pellets.length - 1; 0 < i; i--){
         const pellet = pellets[i]
         pellet.draw(c)
         if (Math.hypot(pellet.position.x - player.position.x, pellet.position.y - player.position.y)< pellet.radius + player.radius){
-            console.log("miam")
             pellets.splice(i,1)
+            score += 10
+            scoreElement.innerHTML = score
         }
 
     }  
-      
+
     //dessin bords / boundaries draw
     boundaries.forEach((boundary) => {
         boundary.draw(c);
