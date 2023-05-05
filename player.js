@@ -15,4 +15,11 @@ export default class Player {
         c.fill()
         c.closePath()
     }
+
+    update(c){
+        this.draw(c)
+        this.position.x += this.velocity.x
+        this.position.y += this.velocity.y
+
+    }
 }

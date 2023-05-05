@@ -49,10 +49,19 @@ map.forEach((row, i) => {
       }  
     })
 })
-boundaries.forEach((boundary) => {
-    boundary.draw(c);
-})
-player.draw(c)
+
+//loop animation
+function animate() {
+    requestAnimationFrame(animate)
+    console.log('jdfhdskfjh')
+    c.clearRect(0,0, canvas.width, canvas.height)
+    boundaries.forEach((boundary) => {
+        boundary.draw(c);
+    })
+    player.update(c)
+}
+animate()
+
 
 window.addEventListener('keydown', ({key}) => {
     switch(key){
@@ -67,6 +76,26 @@ window.addEventListener('keydown', ({key}) => {
         break
         case 'd' :
             player.velocity.x += 5;
+        break
+    }
+    console.log(player.velocity)
+}
+)
+
+
+window.addEventListener('keyup' , (key) => {
+    switch(key){
+        case 'z' :
+            player.velocity.y = 0 ;
+        break
+        case 'q' :
+            player.velocity.x = 0;
+        break
+        case 's' :
+            player.velocity.y = 0;
+        break
+        case 'd' :
+            player.velocity.x = 0;
         break
     }
     console.log(player.velocity)
