@@ -342,10 +342,16 @@ function animate() {
     }
 
     //dessin granules / pellets draw
-    pellets.forEach(pellet => {
+    for(let i = pellets.length - 1; 0 < i; i--){
+        const pellet = pellets[i]
         pellet.draw(c)
-    })
+        if (Math.hypot(pellet.position.x - player.position.x, pellet.position.y - player.position.y)< pellet.radius + player.radius){
+            console.log("miam")
+            pellets.splice(i,1)
+        }
 
+    }  
+      
     //dessin bords / boundaries draw
     boundaries.forEach((boundary) => {
         boundary.draw(c);
