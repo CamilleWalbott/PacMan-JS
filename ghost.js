@@ -1,5 +1,6 @@
 //Classe des fantomes / ghosts class
 export default class Ghost {
+    static speed = 2
     constructor({
         position,
         velocity,
@@ -10,6 +11,8 @@ export default class Ghost {
         this.radius = 15
         this.color = color
         this.prevCollision = []
+        this.speed = 2
+        
     }
     draw(c){
         c.beginPath()

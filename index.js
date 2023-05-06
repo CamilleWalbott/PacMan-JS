@@ -257,10 +257,11 @@ map.forEach((row, i) => {
 function circleCollidesWithRectangle({
     circle, rectangle
 }) {
-    return (circle.position.y - circle.radius + circle.velocity.y <= rectangle.position.y + rectangle.height  
-        && circle.position.x + circle.radius + circle.velocity.x >= rectangle.position.x 
-        && circle.position.y + circle.radius + circle.velocity.y >= rectangle.position.y 
-        && circle.position.x - circle.radius + circle.velocity.x <= rectangle.position.x + rectangle.width )
+    const padding = Boundary.width /2 - circle.radius -1
+    return (circle.position.y - circle.radius + circle.velocity.y <= rectangle.position.y + rectangle.height + padding  
+        && circle.position.x + circle.radius + circle.velocity.x >= rectangle.position.x - padding
+        && circle.position.y + circle.radius + circle.velocity.y >= rectangle.position.y - padding
+        && circle.position.x - circle.radius + circle.velocity.x <= rectangle.position.x + rectangle.width + padding )
 }
 
 //loop animation
@@ -393,7 +394,7 @@ function animate() {
                     ...ghost, 
                     velocity: 
                     {
-                    x:5, 
+                    x: ghost.speed, 
                     y:0
                     }
                 }, 
@@ -408,7 +409,7 @@ function animate() {
                         ...ghost, 
                     velocity: 
                     {
-                    x:-5, 
+                    x: -ghost.speed, 
                     y:0
                     }
                 }, 
@@ -424,7 +425,7 @@ function animate() {
                     velocity: 
                     {
                     x:0, 
-                    y:-5
+                    y: -ghost.speed
                     }
                 }, 
                 rectangle: boundary
@@ -439,7 +440,7 @@ function animate() {
                     velocity: 
                     {
                     x:0, 
-                    y:5
+                    y: ghost.speed
                     }
                 }, 
                 rectangle: boundary
@@ -470,18 +471,18 @@ function animate() {
             switch(direction) {
                 case 'down':
                     ghost.velocity.x = 0
-                    ghost.velocity.y = 5
+                    ghost.velocity.y = ghost.speed
                     break
                 case 'up':
                     ghost.velocity.x = 0
-                    ghost.velocity.y = -5
+                    ghost.velocity.y = -ghost.speed
                     break
                 case 'right':
-                    ghost.velocity.x = 5
+                    ghost.velocity.x = ghost.speed
                     ghost.velocity.y = 0
                     break
                 case 'left':
-                    ghost.velocity.x = -5
+                    ghost.velocity.x = -ghost.speed
                     ghost.velocity.y = 0
                     break
             }
