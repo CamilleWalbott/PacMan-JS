@@ -23,10 +23,12 @@ export default class Ghost {
         c.closePath()
     }
 
-    update(c){
+    update(c, begin){
         this.draw(c)
-        this.position.x += this.velocity.x
-        this.position.y += this.velocity.y
+        if (begin){
+            this.position.x += this.velocity.x
+            this.position.y += this.velocity.y  
+        }
 
     }
 

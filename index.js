@@ -7,8 +7,12 @@ import PowerUp from './powerUp.js'
 const canvas = document.querySelector('canvas')
 const scoreElement = document.querySelector('#score')
 const scoreText = document.querySelector('#scoreText')
+const playButton = document.getElementById('play')
 const c = canvas.getContext('2d')
-
+const beginAudio = new Audio('./assets/sounds/pacman_beginning.wav')
+const playAudio = new Audio('./assets/sounds/pacman_chomp.wav')
+const deathAudio = new Audio('./assets/sounds/pacman_death.wav')
+const scaredAudio = new Audio('./assets/sounds/pacman_eatghost.wav')
 //Réglages canvas / Canvas settings
 canvas.width = innerWidth
 canvas.height = innerHeight
@@ -34,7 +38,7 @@ let score = 0
 //dessin map / map draw
 const map = [
   ['1', '-', '-', '-', '-', '-', '-', '-', '-', '-', '2',], 
-  ['|', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'P', '|',], 
+  ['|', 'P', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'P', '|',], 
   ['|', ' ', 'B', ' ', '[', '7', ']', ' ', 'B', ' ', '|',],
   ['|', ' ', ' ', ' ', ' ', 'U', ' ', ' ', ' ', ' ', '|',],  
   ['|', ' ', '[', ']', ' ', ' ', ' ', '[', ']', ' ', '|',],
@@ -51,11 +55,12 @@ const map = [
 const pellets = []
 const boundaries = []
 const powerUps = []
+let begin = false
 
 const ghosts = [
     new Ghost({
         position: {
-        x: Boundary.width * 6 + Boundary.width/2,
+        x: Boundary.width * 5 + Boundary.width/2,
         y: Boundary.height + Boundary.width/2
         },
        velocity: {
@@ -65,8 +70,8 @@ const ghosts = [
     }),
     new Ghost({
         position: {
-        x: Boundary.width * 6 + Boundary.width/2,
-        y: Boundary.height * 7 + Boundary.width/2
+        x: Boundary.width * 3 + Boundary.width/2,
+        y: Boundary.height * 3 + Boundary.width/2
         },
        velocity: {
         x:5,
@@ -76,8 +81,8 @@ const ghosts = [
     }),
     new Ghost({
         position: {
-        x: Boundary.width * 3 + Boundary.width/2,
-        y: Boundary.height * 7 + Boundary.width/2
+        x: Boundary.width * 7 + Boundary.width/2,
+        y: Boundary.height * 3 + Boundary.width/2
         },
        velocity: {
         x:5,
@@ -88,8 +93,8 @@ const ghosts = [
 ]
 const player = new Player({
     position : {
-        x:Boundary.width * 1.5,
-        y:Boundary.height * 1.5
+        x:Boundary.width * 5.5,
+        y:Boundary.height * 8.5
     },
     velocity : {
         x:0,
@@ -302,12 +307,23 @@ function circleCollidesWithRectangle({
 }
 
 
+
 let animationId
+let isPlayedOnce = false
+
+
 //loop animation
 function animate() {
+    if (!begin && !isPlayedOnce){
+       beginAudio.play()
+       console.log(beginAudio)
+       isPlayedOnce = true
+    } else if (begin){
+        playAudio.play()
+    }
+    
     animationId = requestAnimationFrame(animate)
     c.clearRect(0,0, canvas.width, canvas.height)
-
     //déplacement selon touche /  movement according to key
     if (keys.z.pressed && lastKey === 'z'){
         for (let i =0; i <boundaries.length; i++){
@@ -406,9 +422,12 @@ function animate() {
                 if (ghost.scared){
                     ghosts.splice(i, 1)
                     score += 50
+                    scaredAudio.play()
+
 
                 } else {
                     cancelAnimationFrame(animationId)
+                    deathAudio.play()
                 scoreText.innerHTML = "PERDU!"
                 scoreElement.innerHTML =""
                 }
@@ -437,7 +456,6 @@ function animate() {
         ghosts.forEach((ghost) => {
             ghost.scared = true
             setTimeout(() => {
-
                ghost.scared = false 
             }, 5000)
         })
@@ -471,17 +489,10 @@ function animate() {
     player.update(c)
 
 
-
     //déplacement fantômes / ghosts movment
     ghosts.forEach((ghost) =>{
-        ghost.update(c)
 
-        //collision avec player
-       // if (Math.hypot(ghost.position.x - player.position.x, 
-         //   ghost.position.y - player.position.y) < ghost.radius + player.radius && !ghost.scared ){ 
-          //      cancelAnimationFrame(animationId)
-          //      scoreText.innerHTML = "PERDU!"
-       // }
+        ghost.update(c, begin)
         const collisions = []
         boundaries.forEach(boundary => {
             if ( !collisions.includes('right') &&
@@ -593,27 +604,33 @@ function animate() {
     else if (player.velocity.y > 0) player.rotation = Math.PI / 2
     else if (player.velocity.y < 0) player.rotation = Math.PI * 1.5
 }
+playButton.onclick = function(){
+    animate()
+    playButton.remove()
+}
+//animate()
 
-animate()
-
-
-//listeners touches / keys listeners
+ //listeners touches / keys listeners
 window.addEventListener('keydown', ({key}) => {
     switch(key){
         case 'z' :
+            if (!begin ) begin = true
             keys.z.pressed = true     
             lastKey = 'z'   
         break
         case 'q' :
+            if (!begin) begin = true
             keys.q.pressed = true      
             lastKey ='q'  
             break
         case 's' :
+            if (!begin) begin = true
             keys.s.pressed = true     
             lastKey = 's'   
             break
         case 'd' :
-            keys.d.pressed = true    
+            if (!begin) begin = true
+            if (beginAudio.ended)keys.d.pressed = true    
             lastKey = 'd'    
             break
     }
@@ -636,4 +653,6 @@ window.addEventListener('keyup', ({key}) => {
     }
 }
 )
+
+
 
