@@ -2,6 +2,7 @@ import Boundary from '/boundary.js'
 import Player from '/player.js'
 import Pellet from '/pellets.js'
 import Ghost from './ghost.js'
+import PowerUp from './powerUp.js'
 
 const canvas = document.querySelector('canvas')
 const scoreElement = document.querySelector('#score')
@@ -33,7 +34,7 @@ let score = 0
 //dessin map / map draw
 const map = [
   ['1', '-', '-', '-', '-', '-', '-', '-', '-', '-', '2',], 
-  ['|', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '|',], 
+  ['|', 'P', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'P', '|',], 
   ['|', ' ', 'B', ' ', '[', '7', ']', ' ', 'B', ' ', '|',],
   ['|', ' ', ' ', ' ', ' ', 'U', ' ', ' ', ' ', ' ', '|',],  
   ['|', ' ', '[', ']', ' ', ' ', ' ', '[', ']', ' ', '|',],
@@ -43,12 +44,14 @@ const map = [
   ['|', ' ', '[', ']', ' ', ' ', ' ', '[', ']', ' ', '|',], 
   ['|', ' ', ' ', ' ', ' ', 'n', ' ', ' ', ' ', ' ', '|',], 
   ['|', ' ', 'B', ' ', '[', '_', ']', ' ', 'B', ' ', '|',], 
-  ['|', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '|',], 
+  ['|', 'P', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'P', '|',], 
   ['4', '-', '-', '-', '-', '-', '-', '-', '-', '-', '3',], 
 ]
 
 const pellets = []
 const boundaries = []
+const powerUps = []
+
 const ghosts = [
     new Ghost({
         position: {
@@ -272,6 +275,17 @@ map.forEach((row, i) => {
             })
         )
         break
+        //power ups
+        case 'P': 
+        powerUps.push(
+            new PowerUp({
+                position: {
+                    x: Boundary.width/2 + Boundary.width * j,
+                    y: Boundary.height/2 + Boundary.height * i
+                }
+            })
+        )
+        break
       }  
     })
 })
@@ -383,8 +397,14 @@ function animate() {
         }           
     }
 
+    //dessin PowerUps
+    for(let i = powerUps.length - 1; 0 <= i; i--){
+        const powerUp = powerUps[i]
+        powerUp.draw(c)
+    }
+
     //dessin et touché des granules / pellets draw and touch
-    for(let i = pellets.length - 1; 0 < i; i--){
+    for(let i = pellets.length - 1; 0 <= i; i--){
         const pellet = pellets[i]
         pellet.draw(c)
         if (Math.hypot(pellet.position.x - player.position.x, pellet.position.y - player.position.y)< pellet.radius + player.radius){
