@@ -1,6 +1,7 @@
 import Boundary from '/boundary.js'
 import Player from '/player.js'
 import Pellet from '/pellets.js'
+import Ghost from './ghost.js'
 
 const canvas = document.querySelector('canvas')
 const scoreElement = document.querySelector('#score')
@@ -47,6 +48,18 @@ const map = [
 
 const pellets = []
 const boundaries = []
+const ghosts = [
+    new Ghost({
+        position: {
+        x: Boundary.width * 6 + Boundary.width/2,
+        y: Boundary.height + Boundary.width/2
+        },
+       velocity: {
+        x:5,
+        y:0
+       }
+    })
+]
 const player = new Player({
     position : {
         x:Boundary.width * 1.5,
@@ -350,6 +363,7 @@ function animate() {
         pellet.draw(c)
         if (Math.hypot(pellet.position.x - player.position.x, pellet.position.y - player.position.y)< pellet.radius + player.radius){
             pellets.splice(i,1)
+            //ajout du score
             score += 10
             scoreElement.innerHTML = score
         }
@@ -367,6 +381,115 @@ function animate() {
         }
     })
     player.update(c)
+
+    //déplacement fantômes / ghosts movment
+    ghosts.forEach((ghost) =>{
+        ghost.update(c)
+        const collisions = []
+        boundaries.forEach(boundary => {
+            if ( !collisions.includes('right') &&
+                circleCollidesWithRectangle({
+                circle: {
+                    ...ghost, 
+                    velocity: 
+                    {
+                    x:5, 
+                    y:0
+                    }
+                }, 
+                rectangle: boundary
+            }) 
+            ){
+                collisions.push('right')
+            }
+            if (!collisions.includes('left') &&
+            circleCollidesWithRectangle({
+                circle: {
+                        ...ghost, 
+                    velocity: 
+                    {
+                    x:-5, 
+                    y:0
+                    }
+                }, 
+                rectangle: boundary
+            }) 
+            ){
+                collisions.push('left')
+            }
+            if ( !collisions.includes('up') &&
+            circleCollidesWithRectangle({
+                circle: {
+                    ...ghost, 
+                    velocity: 
+                    {
+                    x:0, 
+                    y:-5
+                    }
+                }, 
+                rectangle: boundary
+            }) 
+            ){   
+            collisions.push('up')}
+
+            if (!collisions.includes('down') &&
+            circleCollidesWithRectangle({
+                circle: {
+                    ...ghost, 
+                    velocity: 
+                    {
+                    x:0, 
+                    y:5
+                    }
+                }, 
+                rectangle: boundary
+                }) 
+            ){
+            collisions.push('down')}
+        })
+        //calcul des directions disponibles / pathways available
+        if( collisions.length > ghost.prevCollision.length) {        
+            ghost.prevCollision = collisions
+        }        
+        if (JSON.stringify(collisions) !== JSON.stringify(ghost.prevCollision)){
+            if (ghost.velocity.x > 0){
+                ghost.prevCollision.push('right')
+            } else if (ghost.velocity.x < 0){
+                ghost.prevCollision.push('left')
+            } else if (ghost.velocity.y < 0){
+                ghost.prevCollision.push('up')
+            } else if (ghost.velocity.y > 0){
+                ghost.prevCollision.push('down')
+            }
+            const pathways = ghost.prevCollision.filter((collision) =>{
+                return !collisions.includes(collision)
+            })
+            console.log({pathways})
+            const direction = pathways[Math.floor(Math.random() * pathways.length)]
+
+            switch(direction) {
+                case 'down':
+                    ghost.velocity.x = 0
+                    ghost.velocity.y = 5
+                    break
+                case 'up':
+                    ghost.velocity.x = 0
+                    ghost.velocity.y = -5
+                    break
+                case 'right':
+                    ghost.velocity.x = 5
+                    ghost.velocity.y = 0
+                    break
+                case 'left':
+                    ghost.velocity.x = -5
+                    ghost.velocity.y = 0
+                    break
+            }
+
+            ghost.prevCollision = []
+        }
+
+    })
 
 }
 animate()
