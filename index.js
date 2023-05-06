@@ -5,6 +5,7 @@ import Ghost from './ghost.js'
 
 const canvas = document.querySelector('canvas')
 const scoreElement = document.querySelector('#score')
+const scoreText = document.querySelector('#scoreText')
 const c = canvas.getContext('2d')
 
 //Réglages canvas / Canvas settings
@@ -58,6 +59,28 @@ const ghosts = [
         x:5,
         y:0
        }
+    }),
+    new Ghost({
+        position: {
+        x: Boundary.width * 6 + Boundary.width/2,
+        y: Boundary.height * 7 + Boundary.width/2
+        },
+       velocity: {
+        x:5,
+        y:0
+       },
+       color: 'cyan'
+    }),
+    new Ghost({
+        position: {
+        x: Boundary.width * 3 + Boundary.width/2,
+        y: Boundary.height * 7 + Boundary.width/2
+        },
+       velocity: {
+        x:5,
+        y:0
+       }, 
+       color: 'pink'
     })
 ]
 const player = new Player({
@@ -264,9 +287,11 @@ function circleCollidesWithRectangle({
         && circle.position.x - circle.radius + circle.velocity.x <= rectangle.position.x + rectangle.width + padding )
 }
 
+
+let animationId
 //loop animation
 function animate() {
-    requestAnimationFrame(animate)
+    animationId = requestAnimationFrame(animate)
     c.clearRect(0,0, canvas.width, canvas.height)
 
     //déplacement selon touche /  movement according to key
@@ -383,9 +408,18 @@ function animate() {
     })
     player.update(c)
 
+
+
     //déplacement fantômes / ghosts movment
     ghosts.forEach((ghost) =>{
         ghost.update(c)
+
+        //collision avec player
+        if (Math.hypot(ghost.position.x - player.position.x, 
+            ghost.position.y - player.position.y) < ghost.radius + player.radius){ 
+                cancelAnimationFrame(animationId)
+                scoreText.innerHTML = "PERDU!"
+        }
         const collisions = []
         boundaries.forEach(boundary => {
             if ( !collisions.includes('right') &&
