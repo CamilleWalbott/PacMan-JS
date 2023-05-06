@@ -12,12 +12,13 @@ export default class Ghost {
         this.color = color
         this.prevCollision = []
         this.speed = 2
+        this.scared = false
         
     }
     draw(c){
         c.beginPath()
         c.arc(this.position.x, this.position.y, this.radius, 0, Math.PI *2)
-        c.fillStyle = this.color
+        c.fillStyle = this.scared ? 'blue' : this.color
         c.fill()
         c.closePath()
     }
@@ -28,4 +29,6 @@ export default class Ghost {
         this.position.y += this.velocity.y
 
     }
+
+    
 }

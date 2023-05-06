@@ -34,7 +34,7 @@ let score = 0
 //dessin map / map draw
 const map = [
   ['1', '-', '-', '-', '-', '-', '-', '-', '-', '-', '2',], 
-  ['|', 'P', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'P', '|',], 
+  ['|', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'P', '|',], 
   ['|', ' ', 'B', ' ', '[', '7', ']', ' ', 'B', ' ', '|',],
   ['|', ' ', ' ', ' ', ' ', 'U', ' ', ' ', ' ', ' ', '|',],  
   ['|', ' ', '[', ']', ' ', ' ', ' ', '[', ']', ' ', '|',],
@@ -397,10 +397,43 @@ function animate() {
         }           
     }
 
+    //detection collision fantômes et joueur / detect collision between ghosts and player
+    for(let i = ghosts.length - 1; 0 <= i; i--){
+        const ghost = ghosts[i]
+ 
+        if (Math.hypot(ghost.position.x - player.position.x, 
+            ghost.position.y - player.position.y) < ghost.radius + player.radius  ){ 
+                if (ghost.scared){
+                    ghosts.splice(i, 1)
+                } else {
+                    cancelAnimationFrame(animationId)
+                scoreText.innerHTML = "PERDU!"
+                }
+                
+        }
+    }
+
     //dessin PowerUps
     for(let i = powerUps.length - 1; 0 <= i; i--){
         const powerUp = powerUps[i]
         powerUp.draw(c)
+
+        // touché PowerUps / PowerUps touch 
+        if (Math.hypot(powerUp.position.x - player.position.x, 
+                        powerUp.position.y - player.position.y
+                        ) < powerUp.radius + player.radius){
+        powerUps.splice (i,1)
+
+        // Modification état fantômes / ghost state 
+        ghosts.forEach((ghost) => {
+            ghost.scared = true
+            setTimeout(() => {
+
+               ghost.scared = false 
+            }, 10000)
+        })
+
+        }
     }
 
     //dessin et touché des granules / pellets draw and touch
@@ -435,11 +468,11 @@ function animate() {
         ghost.update(c)
 
         //collision avec player
-        if (Math.hypot(ghost.position.x - player.position.x, 
-            ghost.position.y - player.position.y) < ghost.radius + player.radius){ 
-                cancelAnimationFrame(animationId)
-                scoreText.innerHTML = "PERDU!"
-        }
+       // if (Math.hypot(ghost.position.x - player.position.x, 
+         //   ghost.position.y - player.position.y) < ghost.radius + player.radius && !ghost.scared ){ 
+          //      cancelAnimationFrame(animationId)
+          //      scoreText.innerHTML = "PERDU!"
+       // }
         const collisions = []
         boundaries.forEach(boundary => {
             if ( !collisions.includes('right') &&
