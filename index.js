@@ -405,12 +405,21 @@ function animate() {
             ghost.position.y - player.position.y) < ghost.radius + player.radius  ){ 
                 if (ghost.scared){
                     ghosts.splice(i, 1)
+                    score += 50
+
                 } else {
                     cancelAnimationFrame(animationId)
                 scoreText.innerHTML = "PERDU!"
+                scoreElement.innerHTML =""
                 }
                 
         }
+    }
+
+    //conditions pour gagner / win conditions
+    if (pellets.length ===0){
+        scoreText.innerHTML = "Gagné! Score :"
+        cancelAnimationFrame(animationId)
     }
 
     //dessin PowerUps
@@ -430,7 +439,7 @@ function animate() {
             setTimeout(() => {
 
                ghost.scared = false 
-            }, 10000)
+            }, 5000)
         })
 
         }
